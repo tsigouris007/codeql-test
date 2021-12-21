@@ -1,0 +1,36 @@
+name: CodeQL
+on:
+  push:
+    branches:
+      - 'main'
+      - 'master'
+    paths:
+      - '**.py'
+  pull_request:
+    paths:
+      - '**.py'
+  workflow_dispatch:
+jobs:
+  codeql:
+    name: CodeQL run
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1.0.26
+        with:
+          languages: ${{ matrix.language }}
+          setup-python-dependencies: true
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1.0.26
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1.0.26
